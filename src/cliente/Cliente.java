@@ -80,45 +80,5 @@ public class Cliente {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        Cadastro c = new Cadastro();
 
-        System.out.println("Selecione uma opção:\n(1) - Aluno\n(2) - Professor");
-        int opcao = scanner.nextInt();
-
-        if(opcao == 1) {
-            Aluno aluno = new Aluno();
-            System.out.println("Coloque seu login: ");
-            String nomeUsuario = scanner.nextLine();
-            aluno.setLogin(nomeUsuario);
-
-            if(aluno.getLogin().equals(c.buscarAluno(nomeUsuario).getLogin())){
-                System.out.println("Informe sua senha");
-                String senha = scanner.nextLine();
-                aluno.setSenha(senha);
-
-                if(aluno.getSenha().equals(c.buscarAluno(nomeUsuario).getSenha())){
-                    Socket socket = new Socket("localhost", 1234);
-                    Cliente cliente = new Cliente(socket, nomeUsuario);
-                    cliente.listenForMesssage();
-                    cliente.mandarMensagem();
-                }
-                else{
-                    System.out.println("Senha incorreta!");
-                }
-            }
-            else{
-                System.out.println("Login incorreto!");
-            }
-        }
-
-
-
-        //System.out.println("Coloque seu login: ");
-       // String nomeUsuario = scanner.nextLine();
-
-
-
-    }
 }

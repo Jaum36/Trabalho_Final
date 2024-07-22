@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClienteAluno extends Cliente {
+public class ClienteProfessores extends Cliente{
 
-    public ClienteAluno(Socket socket, String nomeUsuario) {
+    public ClienteProfessores(Socket socket, String nomeUsuario) {
         super(socket, nomeUsuario);
     }
 
@@ -16,25 +16,25 @@ public class ClienteAluno extends Cliente {
         Scanner scanner = new Scanner(System.in);
         Cadastro c = new Cadastro();
 
-        System.out.println("Selecione uma opção:\n(1) - Aluno");
+        System.out.println("Selecione uma opção:\n(1) - Aluno\n(2) - Professor");
         int opcao = scanner.nextInt();
 
-        if(opcao == 1 && !c.getListaAluno().isEmpty()) {
-            Aluno aluno = new Aluno();
+        if(opcao == 1) {
+            Professores prof = new Professores();
             System.out.println("Coloque seu login: ");
             String nomeUsuario = scanner.nextLine();
-            aluno.setLogin(nomeUsuario);
+            prof.setLogin(nomeUsuario);
 
-            if(aluno.getLogin().equals(c.buscarAluno(nomeUsuario).getLogin())){
+            if(prof.getLogin().equals(c.buscarProfessor(nomeUsuario).getLogin())){
                 System.out.println("Informe sua senha");
                 String senha = scanner.nextLine();
-                aluno.setSenha(senha);
+                prof.setSenha(senha);
 
-                if(aluno.getSenha().equals(c.buscarAluno(nomeUsuario).getSenha())){
+                if(prof.getSenha().equals(c.buscarProfessor(nomeUsuario).getSenha())){
                     Socket socket = new Socket("localhost", 1234);
-                    ClienteAluno clienteAluno = new ClienteAluno(socket, nomeUsuario);
-                    clienteAluno.listenForMesssage();
-                    clienteAluno.mandarMensagem();
+                    Cliente cliente = new Cliente(socket, nomeUsuario);
+                    cliente.listenForMesssage();
+                    cliente.mandarMensagem();
                 }
                 else{
                     System.out.println("Senha incorreta!");
@@ -44,10 +44,6 @@ public class ClienteAluno extends Cliente {
                 System.out.println("Login incorreto!");
             }
         }
-
-        else if(opcao == 1 && c.getListaAluno().isEmpty()){
-            System.out.println("Não há alunos cadastrados!");
-        }
     }
-
 }
+

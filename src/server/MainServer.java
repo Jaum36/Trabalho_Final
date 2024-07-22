@@ -19,7 +19,7 @@ public class MainServer {
         try {
             while(!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Um novo usuário se conectou!!");
+                System.out.println("Um novo usuário foi cadastrado!!");
                 ClienteHandler clienteHandler = new ClienteHandler(socket);
 
                 Thread thread = new Thread(clienteHandler);
