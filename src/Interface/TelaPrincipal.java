@@ -2,18 +2,19 @@ package Interface;
 
 import cliente.Aluno;
 import cliente.Cliente;
-import cliente.ClienteAluno;
 import server.Cadastro;
-import server.Controle;
-import server.MainServer;
+import server.FileUtil;
+
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Scanner;
 
 public class TelaPrincipal {
     static Cadastro cadastro = new Cadastro();
+    private Socket socket;
+
 
     public void cadastrarAluno(){
         Aluno aluno = new Aluno();
@@ -21,6 +22,10 @@ public class TelaPrincipal {
 
         System.out.println("Digite o login do aluno: ");
         String valor = sc.nextLine();
+        if (FileUtil.loginExists(valor)) {
+            System.out.println("Erro ao cadastrar aluno! Login já existe.");
+            return;
+        }
         aluno.setLogin(valor);
 
         System.out.println("Digite a senha do aluno: ");
@@ -31,25 +36,25 @@ public class TelaPrincipal {
         valor = sc.nextLine();
         aluno.setIngresso(valor);
 
-        if(cadastro.cadastrarAluno(aluno)){
-            System.out.println("Cadastrado com sucesso!");
-        }
-        else{
-            System.out.println("Erro ao cadastrar aluno!\nAluno já cadastrado");
-        }
+        FileUtil.saveLogin(aluno.getLogin(), aluno.getSenha());
+
     }
 
     public void listarAlunos(){
-        String concat = "";
-        for(Aluno aluno : cadastro.getListaAluno()) {
-            concat += "Nome: "+aluno.getLogin()+"\nIngresso: "+ aluno.getIngresso();
+        List<String> logins = FileUtil.readLogins();
+        if (logins.isEmpty()) {
+            System.out.println("Nenhum aluno cadastrado.");
+        } else {
+            System.out.println("Alunos cadastrados:");
+            for (String login : logins) {
+                System.out.println("Aluno e senha: "+login+"\n");
+            }
         }
-        System.out.println(concat);
     }
 
     public static void main(String[] args) throws IOException {
         TelaPrincipal tela = new TelaPrincipal();
-
+        List<String> logins = FileUtil.readLogins();
         Scanner scanner = new Scanner(System.in);
         Socket socket = new Socket("localhost", 1234);
 
@@ -83,30 +88,26 @@ public class TelaPrincipal {
                     opcaoA = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
 
-                    if (opcaoA == 1 && !cadastro.getListaAluno().isEmpty()) {
+                    if (opcaoA == 1) {
                         System.out.println("Coloque seu login: ");
                         String nomeUsuario = scanner.nextLine();
-                        Aluno alunoBuscado = cadastro.buscarAluno(nomeUsuario);
+                        String senha = FileUtil.buscarSenhaPorLogin(nomeUsuario);
 
-                        if (alunoBuscado != null && nomeUsuario.equals(alunoBuscado.getLogin())) {
-                            System.out.println("Informe sua senha");
-                            String senha = scanner.nextLine();
+                        if (senha != null) {
+                            System.out.println("Informe sua senha:");
+                            String senhaInformada = scanner.nextLine();
 
-                            if (senha.equals(alunoBuscado.getSenha())) {
+                            if (senha.equals(senhaInformada)) {
                                 Cliente cliente = new Cliente(socket, nomeUsuario);
                                 System.out.println("Login realizado com sucesso!");
-                                System.out.println("Agora você entrou no chat!!");
                                 cliente.listenForMesssage();
                                 cliente.mandarMensagem();
-
                             } else {
                                 System.out.println("Senha incorreta!");
                             }
                         } else {
                             System.out.println("Login incorreto!");
                         }
-                    } else if (opcaoA == 1 && cadastro.getListaAluno().isEmpty()) {
-                        System.out.println("Não há alunos cadastrados!!");
                     }
                 }
             }

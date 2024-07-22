@@ -80,5 +80,18 @@ public class Cliente {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        Socket socket = new Socket("localhost", 1234);
+        Cliente cliente = new Cliente(socket, null);
+        cliente.listenForMesssage();
+        cliente.mandarMensagem();
+        }
+
+
+
+        //System.out.println("Coloque seu login: ");
+       // String nomeUsuario = scanner.nextLine();
+
+
 
 }
