@@ -88,10 +88,4 @@ public class Cliente {
         }
 
 
-
-        //System.out.println("Coloque seu login: ");
-       // String nomeUsuario = scanner.nextLine();
-
-
-
 }

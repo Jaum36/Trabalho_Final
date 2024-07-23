@@ -7,9 +7,9 @@ import java.util.List;
 public class FileUtilProf {
     private static final String FILE_NAME = "professores.txt";
 
-    public static void saveLogin(String login, String senha) {
+    public static void saveLogin(String login, String senha, String titulacao) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            writer.write(login + "," + senha);
+            writer.write(login + "," + senha+","+titulacao);
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class FileUtilProf {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 2 && parts[0].equals(login)) {
+                if (parts.length == 3 && parts[0].equals(login)) {
                     return parts[1];
                 }
             }
@@ -59,3 +59,4 @@ public class FileUtilProf {
         return false;
     }
 }
+

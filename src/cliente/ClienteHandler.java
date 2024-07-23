@@ -14,6 +14,10 @@ public class ClienteHandler implements Runnable {
     private BufferedWriter bufferedWriter;
     private String nomeUsuario;
 
+    public String getNomeUsuario(){
+        return nomeUsuario;
+    }
+
     public ClienteHandler(Socket socket) {
         try {
             this.socket = socket;
@@ -43,6 +47,8 @@ public class ClienteHandler implements Runnable {
         }
 
     }
+
+
 
     public void broadcastMessage(String mensagemEnviada) {
         for(ClienteHandler clienteHandler : clienteHandlers) {

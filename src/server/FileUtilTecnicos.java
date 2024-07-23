@@ -4,12 +4,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileUtil {
-    private static final String FILE_NAME = "logins.txt";
+public class FileUtilTecnicos {
+    private static final String FILE_NAME = "tecnicos.txt";
 
-    public static void saveLogin(String login, String senha, String ingresso) {
+    public static void saveLogin(String login, String senha) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            writer.write(login + "-" + senha+"-"+ingresso);
+            writer.write(login + "," + senha);
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,8 +33,8 @@ public class FileUtil {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("-");
-                if (parts.length == 3 && parts[0].equals(login)) {
+                String[] parts = line.split(",");
+                if (parts.length == 2 && parts[0].equals(login)) {
                     return parts[1];
                 }
             }
@@ -48,7 +48,7 @@ public class FileUtil {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("-");
+                String[] parts = line.split(",");
                 if (parts.length > 0 && parts[0].equals(login)) {
                     return true;
                 }

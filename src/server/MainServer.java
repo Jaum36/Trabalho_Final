@@ -7,15 +7,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MainServer {
     private ServerSocket serverSocket;
 
     private static List<Cliente> clientes = Collections.synchronizedList(new ArrayList<>());
+    private static Set<ClienteHandler> clientesConectados = new HashSet<>();
 
 
     public MainServer(ServerSocket serverSocket) {
@@ -38,25 +36,7 @@ public class MainServer {
         }
     }
 
-    private static void listClients(PrintWriter out) {
-        StringBuilder clientList = new StringBuilder("Clientes conectados:\n");
-        synchronized (clientes) {
-            for (Cliente cliente : clientes) {
-                clientList.append(cliente.getNomeUsuario()).append("\n");
-            }
-        }
-        out.println(clientList);
-    }
 
-    public static List<String> getConnectedClients() {
-        List<String> logins = new ArrayList<>();
-        synchronized (clientes) {
-            for (Cliente cliente : clientes) {
-                logins.add(cliente.getNomeUsuario());
-            }
-        }
-        return logins;
-    }
 
     public void CloseServer() {
         try {
@@ -66,6 +46,20 @@ public class MainServer {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void killClient(String login) {
+        synchronized (clientesConectados) {
+            for (ClienteHandler cliente : clientesConectados) {
+                if (cliente.getNomeUsuario().equals(login)) {
+                    cliente.removeClienteHandler();
+                    clientesConectados.remove(cliente);
+                    System.out.println("Cliente " + login + " desconectado.");
+                    break;
+                }
+            }
+        }
+
     }
 
 
